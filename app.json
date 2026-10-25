@@ -27,6 +27,10 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "web": {
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    }
   }
 }
