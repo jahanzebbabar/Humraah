@@ -1,9 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { CalendarDays, Check } from 'lucide-react-native';
+import { CalendarDays, Check, HeartHandshake, Stethoscope } from 'lucide-react-native';
 import { useState, type ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { bookingDays, bookingTimes, cityKey, doctors, specialtyKey, type Doctor } from '@/data/mock';
+import { bookingDays, bookingTimes, cityKey, specialtyKey, type Doctor } from '@/data/mock';
 import { ButtonV3, Cells, ChoiceV3, ErrorV3, FieldV3, Glass, H1V3, HRule, Kicker, PortraitV3, ScreenV3, SegmentedV3, Stat, T, TagV3, TopBarV3, type ShapeTone } from '@/design/v3/kit';
 import { Object3D } from '@/design/v3/Object3D';
 import { GUTTER_V3, v3 } from '@/design/v3/tokens';
@@ -18,7 +18,26 @@ const tones: ShapeTone[] = ['lavender', 'rose', 'sage'];
 
 export default function ConsultantDetailV3() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const doctor = doctors.find((d) => d.id === id) ?? doctors[0];
+  const router = useRouter();
+  const { t } = useI18n();
+  const { specialists } = useAppStore();
+  const doctor = specialists.find((d) => d.id === id);
+  // The directory streams in from Firestore, so a deep link can land before its listing has arrived.
+  if (!doctor) {
+    return (
+      <ScreenV3 orbs="b">
+        <TopBarV3 onBack={() => router.navigate('/consultants')} />
+        <Glass wrapStyle={styles.gutter} style={{ gap: 6, paddingVertical: 30 }}>
+          <T size={20} weight="light" align="center">
+            {t('consult.emptyTitle')}
+          </T>
+          <T size={14} color={v3.muted} align="center">
+            {t('consult.registeredOnly')}
+          </T>
+        </Glass>
+      </ScreenV3>
+    );
+  }
   // Keyed by doctor so the form starts fresh whenever a different consultant is opened.
   return <Booking key={doctor.id} doctor={doctor} />;
 }
@@ -26,7 +45,9 @@ export default function ConsultantDetailV3() {
 function Booking({ doctor }: { doctor: Doctor }) {
   const router = useRouter();
   const { t, L } = useI18n();
-  const { savePlanner } = useAppStore();
+  const { savePlanner, specialists, user, setMyDoctor, bookAppointment } = useAppStore();
+  const [busy, setBusy] = useState(false);
+  const isMine = user.myDoctorId === doctor.id;
   const [mode, setMode] = useState<Mode>('online');
   const [day, setDay] = useState<Day>();
   const [time, setTime] = useState<string>();
@@ -34,15 +55,38 @@ function Booking({ doctor }: { doctor: Doctor }) {
   const [error, setError] = useState(false);
   const [booked, setBooked] = useState(false);
 
-  const tone = tones[Math.max(0, doctors.indexOf(doctor)) % tones.length];
+  const tone = tones[Math.max(0, specialists.indexOf(doctor)) % tones.length];
   const back = () => router.navigate('/consultants');
   const modeLabel = t(mode === 'online' ? 'consult.online' : 'consult.clinic');
   const dayLabel = (d: Day) => t(`day.${d}` as StringKey);
 
-  const confirm = () => {
+  const confirm = async () => {
     if (!day || !time) {
       setError(true);
       return;
+    }
+    setBusy(true);
+    try {
+      await bookAppointment({
+        doctorId: doctor.id,
+        doctorName: L(doctor.name),
+        motherId: user.uid ?? 'demo-mother',
+        motherName: L(user.fullName),
+        motherStage: user.stage,
+        motherWeek: user.stage === 'Expecting' ? user.week : undefined,
+        postpartumWeeks: user.postpartumWeeks,
+        conditions: user.conditions,
+        day,
+        time,
+        mode,
+        reason: reason.trim(),
+      });
+    } catch (e) {
+      console.warn('[booking]', (e as Error).message);
+      setError(true);
+      return;
+    } finally {
+      setBusy(false);
     }
     savePlanner({ title: `${L(doctor.name)} · ${dayLabel(day)} ${time}`, category: 'Appointments', priority: 'High', due: 'This week' });
     setBooked(true);
@@ -99,6 +143,14 @@ function Booking({ doctor }: { doctor: Doctor }) {
               <Stat label={t('v2.consult.years')} value={doctor.years} size={30} />
               <Stat label={t('v3.consult.fee')} value={doctor.fee} size={30} />
             </Cells>
+            {user.role === 'mother' && (
+              <ButtonV3
+                label={isMine ? t('consult.isMine') : t('consult.makeMine')}
+                icon={isMine ? Stethoscope : HeartHandshake}
+                variant={isMine ? 'primary' : 'glass'}
+                onPress={() => setMyDoctor(isMine ? null : doctor.id)}
+              />
+            )}
           </Glass>
 
           <Glass index={1} wrapStyle={[styles.gutter, { marginTop: 18 }]} style={{ gap: 10 }}>
@@ -141,7 +193,7 @@ function Booking({ doctor }: { doctor: Doctor }) {
             </Group>
             <ErrorV3>{error && t('consult.pickBoth')}</ErrorV3>
             <View style={{ gap: 10 }}>
-              <ButtonV3 label={t('consult.confirm')} onPress={confirm} />
+              <ButtonV3 label={t('consult.confirm')} disabled={busy} onPress={confirm} />
               <ButtonV3 label={t('common.cancel')} variant="glass" onPress={back} />
             </View>
           </Glass>

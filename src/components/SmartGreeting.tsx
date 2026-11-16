@@ -41,8 +41,7 @@ export function useSmartGreeting() {
 
   const greeting = t(`smart.${period}` as StringKey, { name: L(user.firstName) });
   let insight: string;
-  if (user.stage === 'Planning') insight = t(isDay ? 'smart.planningDay' : 'smart.planningNight');
-  else if (user.stage === 'New mom') insight = t(isDay ? 'smart.newMomDay' : 'smart.newMomNight');
+  if (user.stage === 'New mom') insight = t(isDay ? 'smart.newMomDay' : 'smart.newMomNight');
   else {
     const tips = insightForWeek(user.week);
     insight = t('smart.week', { week: user.week, tip: L(isDay ? tips.day : tips.night) });

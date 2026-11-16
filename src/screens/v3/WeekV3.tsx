@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { CalendarDays, Stethoscope } from 'lucide-react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ButtonV3, Cells, Glass, H1V3, HRule, Kicker, LineRow, ScreenV3, Stat, T, TopBarV3 } from '@/design/v3/kit';
+import { babyObjectSize, babySizeForWeek, formatCm, formatG } from '@/data/babySize';
 import { Object3D } from '@/design/v3/Object3D';
 import { GUTTER_V3, v3 } from '@/design/v3/tokens';
 import { useI18n, type StringKey } from '@/i18n';
@@ -18,6 +19,7 @@ export default function WeekV3() {
   const router = useRouter();
   const { t, L } = useI18n();
   const { user } = useAppStore();
+  const baby = babySizeForWeek(user.week);
 
   return (
     <ScreenV3 edges={['top', 'bottom']} orbs="b">
@@ -25,13 +27,13 @@ export default function WeekV3() {
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
         <View style={styles.cover}>
           <Kicker>{t('week.sizeOf')}</Kicker>
-          <H1V3 size={48}>{t('home.babyFruit')}</H1V3>
+          <H1V3 size={48}>{L(baby.fruit)}</H1V3>
         </View>
 
-        <Glass wrapStyle={[styles.gutter, { marginTop: 70 }]} style={{ paddingTop: 70 }} breakout={<Object3D kind="corn" size={150} style={styles.shape} />}>
+        <Glass wrapStyle={[styles.gutter, { marginTop: 70 }]} style={{ paddingTop: 70 }} breakout={<Object3D kind="corn" size={babyObjectSize(user.week, 150)} style={styles.shape} />}>
           <Cells>
-            <Stat label={t('week.length')} value="30" note={L({ en: 'centimetres', ur: 'سینٹی میٹر' })} />
-            <Stat label={t('week.weight')} value="600" note={L({ en: 'grams', ur: 'گرام' })} />
+            <Stat label={t('week.length')} value={formatCm(baby.cm)} note={L({ en: 'centimetres', ur: 'سینٹی میٹر' })} />
+            <Stat label={t('week.weight')} value={formatG(baby.g)} note={L({ en: 'grams', ur: 'گرام' })} />
             <Stat label={t('home.timeline')} value={user.week} note={L({ en: 'of 40 weeks', ur: '40 ہفتوں میں سے' })} />
           </Cells>
         </Glass>

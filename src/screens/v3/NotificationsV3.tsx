@@ -20,7 +20,7 @@ const destinations: Record<NotificationKind, () => Href> = {
   // `at` makes a repeat tap re-open Appointments even if the planner was left on another category.
   doctor: () => ({ pathname: '/planner', params: { category: 'Appointments', at: String(Date.now()) } }),
   water: () => '/',
-  heart: () => '/chat',
+  heart: () => '/library',
 };
 
 /** Reminders, Design 3: one glass panel per day, entries as an editorial list with the time in the margin. */

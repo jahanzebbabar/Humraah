@@ -9,26 +9,54 @@ import { AuthFrameV3, ButtonV3, ErrorV3, FieldV3, Glass, H1V3, IconGlass, T } fr
 import { Object3D } from '@/design/v3/Object3D';
 import { v3 } from '@/design/v3/tokens';
 import { useI18n } from '@/i18n';
-import { useAppStore } from '@/store/AppStore';
+import { weekFromDueDate } from '@/data/babySize';
+import { getSpecialist, signInWithEmail } from '@/lib/accounts';
+import { firebaseReady } from '@/lib/firebase';
+import { same, useAppStore } from '@/store/AppStore';
 import { enter } from '@/theme/motion';
 
 export default function LoginV3() {
   const router = useRouter();
   const { t } = useI18n();
   const flip = useFlip();
-  const { signIn } = useAppStore();
+  const { signIn, setMyListing } = useAppStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  const submit = () => {
+  const submit = async () => {
     if (!email.trim() || !password) {
-      setError(true);
+      setError(t('login.error'));
       return;
     }
-    signIn({ email: email.trim() });
-    router.replace('/');
+    if (!firebaseReady) {
+      signIn({ email: email.trim() });
+      router.replace('/');
+      return;
+    }
+    setBusy(true);
+    try {
+      const { fullName, uid, role, ...details } = await signInWithEmail(email.trim(), password);
+      const name = fullName || email.trim().split('@')[0];
+      if (role === 'specialist') setMyListing(await getSpecialist(uid));
+      signIn({
+        ...details,
+        uid,
+        role,
+        firstName: same(name.split(' ')[0]),
+        fullName: same(name),
+        // The week moves on from the due date given at sign-up, so it is never stale.
+        week: details.dueDate ? weekFromDueDate(details.dueDate) : (details.week ?? 40),
+        needs: details.needs ?? [],
+      });
+      router.replace(role === 'specialist' ? '/doctor' : '/');
+    } catch {
+      setError(t('login.failed'));
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -63,7 +91,7 @@ export default function LoginV3() {
           value={email}
           onChangeText={(v) => {
             setEmail(v);
-            setError(false);
+            setError(null);
           }}
           keyboardType="email-address"
           autoCapitalize="none"
@@ -76,7 +104,7 @@ export default function LoginV3() {
             value={password}
             onChangeText={(v) => {
               setPassword(v);
-              setError(false);
+              setError(null);
             }}
             secureTextEntry={!show}
             autoComplete="password"
@@ -88,13 +116,13 @@ export default function LoginV3() {
             {show ? <EyeOff size={18} color={v3.black} strokeWidth={1.5} /> : <Eye size={18} color={v3.black} strokeWidth={1.5} />}
           </PressableScale>
         </View>
-        <ErrorV3>{error && t('login.error')}</ErrorV3>
+        <ErrorV3>{error}</ErrorV3>
         <PressableScale onPress={() => router.push({ pathname: '/forgot-password', params: { email } })} style={{ alignSelf: 'flex-end' }}>
           <T size={13} weight="medium">
             {t('login.forgot')}
           </T>
         </PressableScale>
-        <ButtonV3 label={t('common.signIn')} icon={ArrowRight} onPress={submit} />
+        <ButtonV3 label={t('common.signIn')} icon={ArrowRight} disabled={busy} onPress={submit} />
       </Glass>
 
       <Glass index={2} radius={999} onPress={() => router.push('/phone-login')} style={styles.phone}>

@@ -88,15 +88,24 @@ function Backdrop({ layout, target }: { layout: OrbLayout; target: BlurTarget })
   );
 }
 
+/**
+ * True inside a navigator that draws the app header: the header already owns the top safe area,
+ * so screens beneath it must not pad for it again.
+ */
+export const HeaderChromeContext = createContext(false);
+
 /** Bone canvas with orbs behind everything. Glass inside the screen blurs the orbs. */
-export function ScreenV3({ children, edges = ['top'], orbs = 'a' }: { children: ReactNode; edges?: Edge[]; orbs?: OrbLayout }) {
+export function ScreenV3({ children, edges: edgesProp = ['top'], orbs = 'a' }: { children: ReactNode; edges?: Edge[]; orbs?: OrbLayout }) {
   const dir = useDirection();
+  const underHeader = useContext(HeaderChromeContext);
+  const edges = underHeader ? edgesProp.filter((e) => e !== 'top') : edgesProp;
   const target = useRef<ComponentRef<typeof View>>(null);
   return (
     <BlurTargetContext.Provider value={target}>
       <View style={[styles.screen, dir]}>
         <Backdrop layout={orbs} target={target} />
-        <SafeAreaView edges={edges} style={{ flex: 1 }}>
+        {/* Under the app header, pages share its 1240px column so content lines up with the nav on wide screens. */}
+        <SafeAreaView edges={edges} style={underHeader ? styles.column : { flex: 1 }}>
           {children}
         </SafeAreaView>
       </View>
@@ -205,11 +214,11 @@ export function PortraitV3({ initials, size = 72, tone = 'lavender', style }: { 
 
 /* ------------------------------------------------------------- typography */
 
-type TProps = { children: ReactNode; size?: number; weight?: Weight; color?: string; align?: 'left' | 'center' | 'right'; style?: StyleProp<TextStyle>; numberOfLines?: number };
+type TProps = { children: ReactNode; size?: number; weight?: Weight; color?: string; align?: 'left' | 'center' | 'right'; style?: StyleProp<TextStyle>; numberOfLines?: number; latin?: boolean };
 
-export function T({ children, size = 15, weight = 'regular', color = v3.black, align, style, numberOfLines }: TProps) {
+export function T({ children, size = 15, weight = 'regular', color = v3.black, align, style, numberOfLines, latin }: TProps) {
   return (
-    <AppText variant="body" weight={weight} color={color} align={align} numberOfLines={numberOfLines} style={[{ fontSize: size, lineHeight: Math.round(size * 1.45) }, style]}>
+    <AppText variant="body" weight={weight} color={color} align={align} latin={latin} numberOfLines={numberOfLines} style={[{ fontSize: size, lineHeight: Math.round(size * 1.45) }, style]}>
       {children}
     </AppText>
   );
@@ -528,6 +537,7 @@ export function AuthFrameV3({ children, footer, orbs = 'b' }: { children: ReactN
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: v3.bone },
+  column: { flex: 1, width: '100%', maxWidth: 1240, alignSelf: 'center' },
   center: { alignItems: 'center', justifyContent: 'center' },
   // Android elevation draws a grey slab through translucent panels, so the float is iOS and web only.
   shadow: Platform.OS === 'android' ? {} : floatShadow,

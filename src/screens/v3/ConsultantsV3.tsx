@@ -4,10 +4,11 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { PressableScale } from '@/components/PressableScale';
-import { cityKey, cityOptions, doctors, specialtyKey, specialtyOptions, type City, type Doctor, type Specialty } from '@/data/mock';
+import { cityKey, cityOptions, specialtyKey, specialtyOptions, type City, type Doctor, type Specialty } from '@/data/mock';
 import { ButtonV3, Cells, FieldV3, Glass, H1V3, HRule, Kicker, PortraitV3, ScreenV3, Stat, T, TagV3, type ShapeTone } from '@/design/v3/kit';
 import { GUTTER_V3, v3 } from '@/design/v3/tokens';
 import { useI18n } from '@/i18n';
+import { useAppStore } from '@/store/AppStore';
 import { NAV_CLEARANCE } from '@/theme';
 import { enter, exit, layout } from '@/theme/motion';
 
@@ -16,19 +17,22 @@ const tones: ShapeTone[] = ['lavender', 'rose', 'sage'];
 /** Doctor directory, Design 3: each portrait breaks out above its glass card; facts sit in a hairline grid. */
 export default function ConsultantsV3() {
   const { t } = useI18n();
+  const { specialists, user } = useAppStore();
   const [query, setQuery] = useState('');
   const [city, setCity] = useState<'all' | City>('all');
   const [specialty, setSpecialty] = useState<'all' | Specialty>('all');
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return doctors.filter(
+    const list = specialists.filter(
       (d) =>
         (!q || [d.name.en, d.name.ur, d.hospital.en, d.hospital.ur].some((s) => s.toLowerCase().includes(q))) &&
         (city === 'all' || d.city === city) &&
         (specialty === 'all' || d.specialty === specialty),
     );
-  }, [query, city, specialty]);
+    // The mother's chosen doctor leads the list.
+    return [...list.filter((d) => d.id === user.myDoctorId), ...list.filter((d) => d.id !== user.myDoctorId)];
+  }, [specialists, query, city, specialty, user.myDoctorId]);
 
   return (
     <ScreenV3 orbs="c">
@@ -51,12 +55,15 @@ export default function ConsultantsV3() {
 
         <View style={styles.count}>
           <Kicker>{`${t('consult.results')} · ${results.length}`}</Kicker>
+          <T size={12} color={v3.muted} style={{ marginTop: 4 }}>
+            {t('consult.registeredOnly')}
+          </T>
         </View>
 
         <View style={{ gap: 30, marginHorizontal: GUTTER_V3, marginTop: 58 }}>
           {results.map((d, i) => (
             <Animated.View key={d.id} entering={enter.slide(1 + i)} exiting={exit.fade} layout={layout}>
-              <DoctorCard doctor={d} tone={tones[doctors.indexOf(d) % tones.length]} />
+              <DoctorCard doctor={d} mine={d.id === user.myDoctorId} tone={tones[specialists.indexOf(d) % tones.length]} />
             </Animated.View>
           ))}
           {results.length === 0 && (
@@ -83,7 +90,7 @@ function TagRow({ children }: { children: ReactNode }) {
   );
 }
 
-function DoctorCard({ doctor: d, tone }: { doctor: Doctor; tone: ShapeTone }) {
+function DoctorCard({ doctor: d, tone, mine }: { doctor: Doctor; tone: ShapeTone; mine: boolean }) {
   const router = useRouter();
   const { t, L } = useI18n();
   const open = () => router.navigate({ pathname: '/consultants/[id]', params: { id: d.id } });
@@ -100,6 +107,7 @@ function DoctorCard({ doctor: d, tone }: { doctor: Doctor; tone: ShapeTone }) {
           </T>
         </View>
         <View style={styles.tags}>
+          {mine && <TagV3 label={t('consult.isMine')} active />}
           <TagV3 label={t(cityKey(d.city))} />
           <TagV3 label={t(specialtyKey(d.specialty))} />
         </View>

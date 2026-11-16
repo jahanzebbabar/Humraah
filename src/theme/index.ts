@@ -122,4 +122,5 @@ export const shadow = {
 } as const;
 
 /** Height reserved under scroll content so the floating nav bar never covers it. */
-export const NAV_CLEARANCE = 120;
+/** Space at the end of scrolling pages so the Ask Humraah button never covers the last item. */
+export const NAV_CLEARANCE = 96;

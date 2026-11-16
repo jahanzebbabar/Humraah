@@ -1,13 +1,14 @@
 import { useRouter } from 'expo-router';
-import { Bell, ChevronRight, Pill, Plus, Wind, type LucideIcon } from 'lucide-react-native';
+import { ChevronRight, Pill, Plus, Wind, type LucideIcon } from 'lucide-react-native';
 import { useEffect, type ReactNode } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from 'react-native-reanimated';
 import { PressableScale } from '@/components/PressableScale';
 import { layoutDirection, useFlip } from '@/components/Screen';
 import { useSmartGreeting } from '@/components/SmartGreeting';
-import { doctors, dueOptions, notifications } from '@/data/mock';
-import { Cells, CheckV3, Figure, Glass, H1V3, HRule, IconButtonV3, IconGlass, Kicker, LineRow, PortraitV3, ScreenV3, Stat, T, TagV3 } from '@/design/v3/kit';
+import { babyObjectSize, babySizeForWeek, formatCm, formatG } from '@/data/babySize';
+import { doctors, dueOptions } from '@/data/mock';
+import { Cells, CheckV3, Figure, Glass, H1V3, HRule, IconGlass, Kicker, LineRow, PortraitV3, ScreenV3, Stat, T, TagV3 } from '@/design/v3/kit';
 import { Object3D } from '@/design/v3/Object3D';
 import { GUTTER_V3, radiusV3, v3 } from '@/design/v3/tokens';
 import { useI18n, type StringKey } from '@/i18n';
@@ -54,9 +55,8 @@ function Track({ progress, delay = 0, style }: { progress: number; delay?: numbe
 export default function HomeV3() {
   const router = useRouter();
   const { t, L, lang } = useI18n();
-  const { user, kicks, addKick, care, toggleCare, readNotifications, planner, supplements } = useAppStore();
+  const { user, kicks, addKick, care, toggleCare, planner, supplements } = useAppStore();
   const { greeting, insight } = useSmartGreeting();
-  const unread = notifications.some((n) => !readNotifications.includes(n.id));
   const today = new Date().toLocaleDateString(lang === 'ur' ? 'ur-PK' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
 
   // The soonest open appointment in the planner, so a booking made in the app shows up here.
@@ -68,6 +68,7 @@ export default function HomeV3() {
   const openVisits = () => router.navigate({ pathname: '/planner', params: { category: 'Appointments', at: String(Date.now()) } });
 
   const taken = supplements.filter((s) => s.taken).length;
+  const baby = babySizeForWeek(user.week);
   const kicksLeft = Math.max(KICK_GOAL - kicks, 0);
 
   return (
@@ -75,7 +76,6 @@ export default function HomeV3() {
       <ScrollView contentContainerStyle={{ paddingBottom: NAV_CLEARANCE + 10 }} showsVerticalScrollIndicator={false}>
         <View style={styles.top}>
           <Kicker>{today}</Kicker>
-          <IconButtonV3 icon={Bell} label={t('notif.title')} dot={unread} onPress={() => router.push('/notifications')} />
         </View>
 
         <Animated.View entering={enter.rise(0)} style={styles.cover}>
@@ -98,7 +98,7 @@ export default function HomeV3() {
           style={{ paddingTop: 30 }}
           breakout={
             <Float style={styles.heroShape}>
-              <Object3D kind="corn" size={132} />
+              <Object3D kind="corn" size={babyObjectSize(user.week, 132)} />
             </Float>
           }
         >
@@ -112,10 +112,10 @@ export default function HomeV3() {
             <View style={{ gap: 6 }}>
               <Kicker>{t('v3.home.baby')}</Kicker>
               <T size={20} weight="light" style={{ lineHeight: 26 }}>
-                {t('home.babyFruit')}
+                {L(baby.fruit)}
               </T>
               <T size={12} color={v3.muted}>
-                {t('home.babyMeasure')}
+                {t('home.babyMeasure', { cm: formatCm(baby.cm), g: formatG(baby.g) })}
               </T>
             </View>
           </Cells>

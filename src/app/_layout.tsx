@@ -78,6 +78,7 @@ function Navigator() {
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: v3.bone }, animation: push, animationDuration: 260 }}>
       <Stack.Screen name="welcome" options={{ animation: 'fade' }} />
       <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
+      <Stack.Screen name="doctor" options={{ animation: 'fade' }} />
       <Stack.Screen name="login" />
       <Stack.Screen name="sign-up" />
       <Stack.Screen name="forgot-password" />

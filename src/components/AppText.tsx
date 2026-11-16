@@ -7,10 +7,12 @@ type Props = TextProps & {
   color?: string;
   weight?: keyof typeof fonts;
   align?: 'left' | 'center' | 'right';
+  /** Content that only exists in English (the library): keep the Latin face and left alignment in Urdu mode. */
+  latin?: boolean;
 };
 
 /** All text goes through here so the Urdu font, size and right-to-left alignment are applied in one place. */
-export function AppText({ variant = 'body', color = colors.text, weight, align, style, ...rest }: Props) {
+export function AppText({ variant = 'body', color = colors.text, weight, align, latin, style, ...rest }: Props) {
   const { lang } = useI18n();
   let flat: TextStyle = StyleSheet.flatten([
     typeScale[variant],
@@ -20,7 +22,7 @@ export function AppText({ variant = 'body', color = colors.text, weight, align, 
     style,
   ] as StyleProp<TextStyle>) ?? {};
 
-  if (lang === 'ur') {
+  if (lang === 'ur' && !latin) {
     const size = (flat.fontSize ?? 14) * URDU_SIZE;
     flat = {
       ...flat,
