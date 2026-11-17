@@ -27,7 +27,7 @@ export default function LibraryTopicV3() {
       <ScreenV3 orbs="c">
         <View style={[styles.article, { paddingTop: 30, gap: 16 }]}>
           <BackLink label="Back to the library" onPress={() => router.navigate('/library')} />
-          <T latin size={18}>
+          <T latin size={20}>
             This topic could not be found.
           </T>
         </View>
@@ -59,10 +59,10 @@ export default function LibraryTopicV3() {
             <T latin size={wide ? 42 : 32} weight="light" style={{ lineHeight: wide ? 48 : 38, letterSpacing: -1 }}>
               {topic.title}
             </T>
-            <Rich text={topic.description} size={wide ? 18 : 16.5} color="#4B5A53" weight="light" />
+            <Rich text={topic.description} size={wide ? 20 : 18.5} color="#4B5A53" />
             <View style={styles.meta}>
               <Clock size={14} color={v3.muted} strokeWidth={1.6} />
-              <T latin size={12.5} color={v3.muted}>
+              <T latin size={14.5} color={v3.muted}>
                 {`About ${topic.minutes} min read`}
               </T>
             </View>
@@ -75,7 +75,7 @@ export default function LibraryTopicV3() {
                 <View key={k} style={styles.li}>
                   <View style={styles.tick} />
                   <View style={{ flex: 1 }}>
-                    <Rich text={g} size={15} />
+                    <Rich text={g} size={17} />
                   </View>
                 </View>
               ))}
@@ -90,12 +90,12 @@ export default function LibraryTopicV3() {
 
           <View style={styles.takeaway}>
             <SectionLabel>What to take away</SectionLabel>
-            <Rich text={topic.takeaway} size={15.5} color={v3.black} />
+            <Rich text={topic.takeaway} size={17.5} color={v3.black} />
           </View>
 
           <View style={styles.reflect}>
             <SectionLabel>A question to reflect on</SectionLabel>
-            <T latin size={19} weight="light" style={{ lineHeight: 28 }}>
+            <T latin size={21} weight="light" style={{ lineHeight: 31 }}>
               {topic.prompt}
             </T>
           </View>
@@ -104,10 +104,10 @@ export default function LibraryTopicV3() {
             <PressableScale scaleTo={0.985} onPress={() => open(guideHref(area.journal!, live))} style={styles.jcall}>
               <NotebookPen size={22} color={v3.black} strokeWidth={1.5} />
               <View style={{ flex: 1, gap: 3 }}>
-                <T latin size={15} weight="semibold">
+                <T latin size={17} weight="semibold">
                   Writing in your Humraah journal?
                 </T>
-                <T latin size={13.5} color="#52645C" style={{ lineHeight: 20 }}>
+                <T latin size={15.5} color="#52645C" style={{ lineHeight: 23 }}>
                   {`The ${live.label.toLowerCase()} guide for ${area.name} walks you through every exercise in that part of the journal.`}
                 </T>
               </View>
@@ -131,11 +131,11 @@ export default function LibraryTopicV3() {
               <PressableScale onPress={() => router.replace(`/library/topic/${prev.slug}` as Href)} style={styles.pageBtn}>
                 <View style={styles.pageLbl}>
                   <ChevronLeft size={14} color={v3.muted} strokeWidth={1.6} />
-                  <T latin size={12} color={v3.muted}>
+                  <T latin size={14} color={v3.muted}>
                     Previous
                   </T>
                 </View>
-                <T latin size={14} weight="medium">
+                <T latin size={16} weight="medium">
                   {prev.title}
                 </T>
               </PressableScale>
@@ -145,21 +145,21 @@ export default function LibraryTopicV3() {
             {next ? (
               <PressableScale onPress={() => router.replace(`/library/topic/${next.slug}` as Href)} style={[styles.pageBtn, { alignItems: 'flex-end' }]}>
                 <View style={styles.pageLbl}>
-                  <T latin size={12} color={v3.muted}>
+                  <T latin size={14} color={v3.muted}>
                     Next
                   </T>
                   <ChevronRight size={14} color={v3.muted} strokeWidth={1.6} />
                 </View>
-                <T latin size={14} weight="medium" align="right">
+                <T latin size={16} weight="medium" align="right">
                   {next.title}
                 </T>
               </PressableScale>
             ) : (
               <PressableScale onPress={() => router.navigate({ pathname: '/library', params: { area: area.slug } })} style={[styles.pageBtn, { alignItems: 'flex-end' }]}>
-                <T latin size={12} color={v3.muted}>
+                <T latin size={14} color={v3.muted}>
                   Back to
                 </T>
-                <T latin size={14} weight="medium" align="right">
+                <T latin size={16} weight="medium" align="right">
                   {`All ${area.name} topics`}
                 </T>
               </PressableScale>
@@ -168,15 +168,15 @@ export default function LibraryTopicV3() {
 
           {topic.sources.length > 0 && (
             <View style={styles.sources}>
-              <T latin size={15} weight="semibold">
+              <T latin size={17} weight="semibold">
                 Further reading
               </T>
-              <T latin size={13} color={v3.muted} style={{ lineHeight: 19 }}>
+              <T latin size={15} color={v3.muted} style={{ lineHeight: 22 }}>
                 These organisations offer reliable, more detailed information. Some are based outside Pakistan, so services and phone numbers may differ from those near you.
               </T>
               {topic.sources.map(([label, url]) => (
                 <PressableScale key={url} scaleTo={0.98} onPress={() => Linking.openURL(url).catch(() => {})} style={styles.source}>
-                  <T latin size={13.5} color="#426A59" weight="medium" style={{ flex: 1 }}>
+                  <T latin size={15.5} color="#426A59" weight="medium" style={{ flex: 1 }}>
                     {label}
                   </T>
                   <ExternalLink size={14} color="#426A59" strokeWidth={1.6} />
@@ -187,7 +187,7 @@ export default function LibraryTopicV3() {
 
           <View style={{ marginTop: 18 }}>
             <Disclaimer>
-              <T latin size={12.5} weight="semibold" color="#655B49">
+              <T latin size={14.5} weight="semibold" color="#655B49">
                 Reminder:{' '}
               </T>
               This guide is educational, not a diagnosis or treatment plan. Contact a qualified professional for advice about your own health or symptoms. Seek urgent care for emergency symptoms.

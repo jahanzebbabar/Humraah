@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { useState, useRef } from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions, View, type ScrollViewInstance } from 'react-native';
+import { Image, ScrollView, StyleSheet, useWindowDimensions, View, type ScrollViewInstance } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { PressableScale } from '@/components/PressableScale';
 import { layoutDirection, useDirection } from '@/components/Screen';
@@ -37,9 +37,12 @@ export default function WelcomeV3() {
   return (
     <ScreenV3 edges={['top', 'bottom']} orbs="a">
       <Animated.View entering={enter.fade()} style={styles.top}>
-        <T size={22} weight="light" style={{ letterSpacing: -0.4 }}>
-          {t('brand')}
-        </T>
+        <View style={styles.brand}>
+          <Image source={require('../../../assets/logo.png')} style={styles.logo} resizeMode="contain" accessibilityIgnoresInvertColors />
+          <T size={22} weight="light" style={{ letterSpacing: -0.4 }}>
+            {t('brand')}
+          </T>
+        </View>
         <LangV3 />
       </Animated.View>
 
@@ -106,6 +109,8 @@ export default function WelcomeV3() {
 
 const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: GUTTER_V3, paddingTop: 8 },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  logo: { width: 30, height: 30 },
   slide: { paddingHorizontal: GUTTER_V3, paddingBottom: 16 },
   panel: { flex: 1, justifyContent: 'flex-end', gap: 14, paddingTop: 120, paddingBottom: 30 },
   shape: { position: 'absolute', top: -70, end: 26 },

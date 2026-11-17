@@ -38,7 +38,7 @@ export function AreaIcon({ name, size = 38 }: { name: string; size?: number }) {
 /* ------------------------------------------------------------------ text */
 
 /** Text with `**bold**` spans, the markup the library content is written in. */
-export function Rich({ text, size = 15.5, color = ink, weight = 'regular', style }: { text: string; size?: number; color?: string; weight?: 'light' | 'regular' | 'medium'; style?: object }) {
+export function Rich({ text, size = 17.5, color = ink, weight = 'regular', style }: { text: string; size?: number; color?: string; weight?: 'light' | 'regular' | 'medium'; style?: object }) {
   const parts = text.split(/\*\*(.+?)\*\*/);
   return (
     <T latin size={size} color={color} weight={weight} style={[{ lineHeight: Math.round(size * 1.62) }, style]}>
@@ -59,7 +59,7 @@ export function Pill({ label, kind = 'stage' }: { label: string; kind?: 'stage' 
   const bg = { stage: 'rgba(197, 214, 192, 0.6)', area: 'rgba(232, 191, 196, 0.45)', journal: 'rgba(207, 198, 230, 0.6)', plain: v3.glassStrong }[kind];
   return (
     <View style={[styles.pill, { backgroundColor: bg }]}>
-      <T latin size={10.5} weight="semibold" style={{ letterSpacing: 0.6, textTransform: 'uppercase' }}>
+      <T latin size={12} weight="semibold" style={{ letterSpacing: 0.6, textTransform: 'uppercase' }}>
         {label}
       </T>
     </View>
@@ -68,7 +68,7 @@ export function Pill({ label, kind = 'stage' }: { label: string; kind?: 'stage' 
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <T latin size={11} weight="semibold" color={v3.muted} style={{ letterSpacing: 1.3, textTransform: 'uppercase' }}>
+    <T latin size={12.5} weight="semibold" color={v3.muted} style={{ letterSpacing: 1.3, textTransform: 'uppercase' }}>
       {children}
     </T>
   );
@@ -79,7 +79,7 @@ export function SectionLabel({ children }: { children: ReactNode }) {
 export function BlockView({ b }: { b: Block }) {
   if ('h' in b)
     return (
-      <T latin size={19} weight="semibold" style={{ marginTop: 22, lineHeight: 26 }}>
+      <T latin size={21} weight="semibold" style={{ marginTop: 22, lineHeight: 29 }}>
         {b.h}
       </T>
     );
@@ -99,7 +99,7 @@ export function BlockView({ b }: { b: Block }) {
           <View key={i} style={styles.li}>
             {ordered ? (
               <View style={styles.num}>
-                <T latin size={12} weight="semibold" color={v3.white}>
+                <T latin size={14} weight="semibold" color={v3.white}>
                   {i + 1}
                 </T>
               </View>
@@ -121,11 +121,11 @@ export function BlockView({ b }: { b: Block }) {
           <View key={i} style={styles.myth}>
             <View style={[styles.mythHalf, { backgroundColor: '#FAF4EC' }]}>
               <SectionLabel>You may hear</SectionLabel>
-              <Rich text={m} size={14.5} color="#6F5F45" />
+              <Rich text={m} size={16.5} color="#6F5F45" />
             </View>
             <View style={styles.mythHalf}>
               <SectionLabel>What we know</SectionLabel>
-              <Rich text={r} size={14.5} />
+              <Rich text={r} size={16.5} />
             </View>
           </View>
         ))}
@@ -136,14 +136,14 @@ export function BlockView({ b }: { b: Block }) {
     <View style={{ gap: 12, marginVertical: 10 }}>
       {f.soon.length > 0 && (
         <View style={[styles.flag, styles.soon]}>
-          <T latin size={15} weight="semibold" color="#5F5234">
+          <T latin size={17} weight="semibold" color="#5F5234">
             Contact your doctor, midwife or Lady Health Visitor soon if:
           </T>
           {f.soon.map((x, i) => (
             <View key={i} style={styles.li}>
               <View style={[styles.bullet, { backgroundColor: '#5F5234' }]} />
               <View style={{ flex: 1 }}>
-                <Rich text={x} size={14.5} color="#5F5234" />
+                <Rich text={x} size={16.5} color="#5F5234" />
               </View>
             </View>
           ))}
@@ -151,18 +151,18 @@ export function BlockView({ b }: { b: Block }) {
       )}
       {f.urgent.length > 0 && (
         <View style={[styles.flag, styles.urgent]}>
-          <T latin size={15} weight="semibold" color="#6E2F26">
+          <T latin size={17} weight="semibold" color="#6E2F26">
             Get urgent care now if:
           </T>
           {f.urgent.map((x, i) => (
             <View key={i} style={styles.li}>
               <View style={[styles.bullet, { backgroundColor: '#6E2F26' }]} />
               <View style={{ flex: 1 }}>
-                <Rich text={x} size={14.5} color="#6E2F26" />
+                <Rich text={x} size={16.5} color="#6E2F26" />
               </View>
             </View>
           ))}
-          <T latin size={12.5} color="#6E2F26" style={{ marginTop: 4 }}>
+          <T latin size={14.5} color="#6E2F26" style={{ marginTop: 4 }}>
             Go to the nearest hospital emergency department or call an ambulance (such as Rescue 1122, where available). Don’t wait for a routine appointment.
           </T>
         </View>
@@ -183,15 +183,15 @@ export function TopicCard({ topic, showArea, style }: { topic: Topic; showArea?:
         <Pill label={stageLabel(topic.stage)} />
         {showArea && <Pill label={topic.section} kind="area" />}
       </View>
-      <T latin size={17} weight="medium" style={{ lineHeight: 23 }}>
+      <T latin size={19} weight="medium" style={{ lineHeight: 26 }}>
         {topic.title}
       </T>
-      <T latin size={13.5} color={v3.muted} style={{ lineHeight: 20, flex: 1 }}>
+      <T latin size={15.5} color={v3.muted} style={{ lineHeight: 23, flex: 1 }}>
         {clip(topic.description, 170)}
       </T>
       <View style={styles.cardFoot}>
         <Clock size={13} color={v3.muted} strokeWidth={1.6} />
-        <T latin size={12} color={v3.muted}>
+        <T latin size={14} color={v3.muted}>
           {topic.minutes} min read
         </T>
       </View>
@@ -210,10 +210,10 @@ export function GuideCard({ c, s, g, style }: { c: JournalCategory; s: JournalSt
         <Pill label="Journal guide" kind="journal" />
         <Pill label={c.section} kind="area" />
       </View>
-      <T latin size={17} weight="medium" style={{ lineHeight: 23 }}>
+      <T latin size={19} weight="medium" style={{ lineHeight: 26 }}>
         {`${s.label} · ${g.num} ${g.title}`}
       </T>
-      <T latin size={13.5} color={v3.muted} style={{ lineHeight: 20 }}>
+      <T latin size={15.5} color={v3.muted} style={{ lineHeight: 23 }}>
         {clip(g.desc, 150)}
       </T>
     </PressableScale>
@@ -238,7 +238,7 @@ export function BackLink({ label, onPress }: { label: string; onPress: () => voi
   return (
     <PressableScale onPress={onPress} scaleTo={0.97} style={[styles.back, LTR]}>
       <ArrowLeft size={16} color={v3.black} strokeWidth={1.8} />
-      <T latin size={14} weight="medium">
+      <T latin size={16} weight="medium">
         {label}
       </T>
     </PressableScale>
@@ -248,7 +248,7 @@ export function BackLink({ label, onPress }: { label: string; onPress: () => voi
 export function Disclaimer({ children }: { children: ReactNode }) {
   return (
     <View style={styles.disclaimer}>
-      <T latin size={12.5} color="#655B49" style={{ lineHeight: 19 }}>
+      <T latin size={14.5} color="#655B49" style={{ lineHeight: 22 }}>
         {children}
       </T>
     </View>

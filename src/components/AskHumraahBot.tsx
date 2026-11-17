@@ -1,7 +1,7 @@
 import { useRouter, type Href } from 'expo-router';
 import { ArrowUp, BookOpen, ChevronRight, MessageCircle, Stethoscope, X } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View, type ScrollViewInstance } from 'react-native';
+import { Image, Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, useWindowDimensions, View, type ScrollViewInstance } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeInLeft, FadeInRight, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useInputFont } from '@/components/Controls';
@@ -92,7 +92,7 @@ export function AskHumraahBot() {
     <View style={[styles.panel, dir, card ? [styles.card, { height: Math.min(760, height - fabBottom - 100), bottom: fabBottom + 74 }, isRTL ? { left: 20 } : { right: 20 }] : [StyleSheet.absoluteFill, { paddingTop: insets.top, paddingBottom: insets.bottom }]]}>
       <View style={styles.head}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>ھ</Text>
+          <Image source={require('../../assets/logo.png')} style={styles.avatarImg} resizeMode="contain" accessibilityIgnoresInvertColors />
         </View>
         <View style={{ flex: 1 }}>
           <T size={16} weight="semibold">
@@ -246,8 +246,8 @@ const styles = StyleSheet.create({
   panel: { backgroundColor: v3.bone, overflow: 'hidden' },
   card: { position: 'absolute', width: 480, maxWidth: '92%', borderRadius: radiusV3.card, borderWidth: 1, borderColor: v3.white, ...floatShadow, shadowOpacity: 0.16 },
   head: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 18, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: v3.hairline, backgroundColor: 'rgba(255,255,255,0.5)' },
-  avatar: { width: 40, height: 40, borderRadius: 14, backgroundColor: v3.sage, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: v3.edge },
-  avatarText: { fontFamily: 'NotoNastaliqUrdu_500Medium', fontSize: 19, lineHeight: 32, color: v3.black },
+  avatar: { width: 40, height: 40, borderRadius: 14, backgroundColor: v3.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: v3.edge },
+  avatarImg: { width: 30, height: 30 },
   close: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', backgroundColor: v3.glassStrong, borderWidth: 1, borderColor: v3.edge },
   thread: { padding: 16, gap: 10, flexGrow: 1 },
   theirs: { alignSelf: 'flex-start', maxWidth: '90%', backgroundColor: v3.white, borderRadius: radiusV3.inner, borderTopLeftRadius: 8, paddingHorizontal: 16, paddingVertical: 12, borderWidth: 1, borderColor: v3.hairline },

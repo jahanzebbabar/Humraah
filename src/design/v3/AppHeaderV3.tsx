@@ -3,7 +3,7 @@ import { useRouter, type Href } from 'expo-router';
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { Bell, BookOpen, CalendarDays, ChevronRight, House, Menu, Settings, Users, X, type LucideIcon } from 'lucide-react-native';
 import { useState } from 'react';
-import { Modal, Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image, Modal, Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeIn, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PressableScale } from '@/components/PressableScale';
@@ -34,7 +34,7 @@ function Brand({ onPress }: { onPress: () => void }) {
   return (
     <PressableScale onPress={onPress} scaleTo={0.97} accessibilityLabel={t('brand')} style={styles.brand}>
       <View style={styles.mark}>
-        <Text style={styles.markText}>ھ</Text>
+        <Image source={require('../../../assets/logo.png')} style={styles.markImg} resizeMode="contain" accessibilityIgnoresInvertColors />
       </View>
       <T size={19} weight="semibold" style={{ letterSpacing: -0.4 }}>
         {t('brand')}
@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
   barGlass: { backgroundColor: 'rgba(244, 243, 240, 0.72)', borderBottomWidth: 1, borderBottomColor: v3.hairline },
   inner: { height: BAR_H, flexDirection: 'row', alignItems: 'center', gap: 16, paddingHorizontal: GUTTER_V3, width: '100%', maxWidth: 1240, alignSelf: 'center' },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  mark: { width: 36, height: 36, borderRadius: 12, backgroundColor: v3.sage, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: v3.edge },
-  markText: { fontFamily: 'NotoNastaliqUrdu_500Medium', fontSize: 24, lineHeight: 40, color: v3.black, marginTop: -4 },
+  mark: { width: 36, height: 36, borderRadius: 12, backgroundColor: v3.white, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: v3.edge },
+  markImg: { width: 28, height: 28 },
   links: { flex: 1, flexDirection: 'row', justifyContent: 'center', gap: 4 },
   link: { flexDirection: 'row', alignItems: 'center', gap: 8, height: 40, paddingHorizontal: 16, borderRadius: radiusV3.pill },
   linkActive: { backgroundColor: v3.black },

@@ -73,7 +73,7 @@ export default function LibraryV3() {
               <View style={{ flex: 1, gap: 10, minWidth: 260 }}>
                 <Kicker>{t('lib.kicker')}</Kicker>
                 <H1V3 size={pageW >= 700 ? 52 : 38}>{t('lib.title')}</H1V3>
-                <T size={15.5} weight="light" style={{ lineHeight: 24, maxWidth: 680 }}>
+                <T size={17.5} weight="light" style={{ lineHeight: 27, maxWidth: 680 }}>
                   {t('lib.lead')}
                 </T>
               </View>
@@ -87,7 +87,7 @@ export default function LibraryV3() {
                     <T size={30} weight="extraLight" style={{ lineHeight: 34 }}>
                       {n}
                     </T>
-                    <T size={12} color={v3.muted}>
+                    <T size={14} color={v3.muted}>
                       {label}
                     </T>
                   </View>
@@ -129,10 +129,10 @@ export default function LibraryV3() {
                     <View key={a.slug}>
                       <PressableScale scaleTo={0.98} onPress={() => pick(a)} style={[styles.navRow, LTR, active && styles.navActive]}>
                         <AreaIcon name={a.name} size={30} />
-                        <T latin size={13.5} weight={active ? 'medium' : 'regular'} style={{ flex: 1 }} numberOfLines={2}>
+                        <T latin size={15.5} weight={active ? 'medium' : 'regular'} style={{ flex: 1 }} numberOfLines={2}>
                           {a.name}
                         </T>
-                        <T latin size={12} color={v3.muted}>
+                        <T latin size={14} color={v3.muted}>
                           {filterByStage(a.topics, stage).length}
                         </T>
                       </PressableScale>
@@ -141,10 +141,10 @@ export default function LibraryV3() {
                           {a.journal.stages.map((s) => (
                             <PressableScale key={s.key} disabled={!s.live} onPress={() => router.push(guideHref(a.journal!, s))} style={[styles.subRow, LTR, !s.live && { opacity: 0.45 }]}>
                               <NotebookPen size={14} color={v3.black} strokeWidth={1.5} />
-                              <T latin size={12.5} style={{ flex: 1 }}>
+                              <T latin size={14.5} style={{ flex: 1 }}>
                                 {s.label} guide
                               </T>
-                              <T latin size={11} color={v3.muted}>
+                              <T latin size={12.5} color={v3.muted}>
                                 {s.live ? 'read' : 'soon'}
                               </T>
                             </PressableScale>
@@ -165,7 +165,7 @@ export default function LibraryV3() {
                       <T size={26} weight="light">
                         {`${t('lib.results')}: “${query.trim()}”`}
                       </T>
-                      <T latin size={13} color={v3.muted}>
+                      <T latin size={15} color={v3.muted}>
                         {`${results.topics.length} topic${results.topics.length === 1 ? '' : 's'}${results.guides.length ? ` · ${results.guides.length} journal guide section${results.guides.length === 1 ? '' : 's'}` : ''}`}
                       </T>
                     </View>
@@ -191,7 +191,7 @@ export default function LibraryV3() {
                   {!results.topics.length && !results.guides.length && (
                     <View style={styles.empty}>
                       <BookOpen size={26} color={v3.muted} strokeWidth={1.4} />
-                      <T size={14} color={v3.muted} align="center">
+                      <T size={16} color={v3.muted} align="center">
                         {t('lib.empty')}
                       </T>
                     </View>
@@ -205,7 +205,7 @@ export default function LibraryV3() {
                       <T latin size={pageW >= 700 ? 28 : 23} weight="light" style={{ lineHeight: pageW >= 700 ? 34 : 29, letterSpacing: -0.5 }}>
                         {area.name}
                       </T>
-                      <T latin size={13} color={v3.muted}>
+                      <T latin size={15} color={v3.muted}>
                         {`${list.length} topic${list.length === 1 ? '' : 's'} · Select a topic to read it`}
                       </T>
                     </View>
@@ -221,14 +221,14 @@ export default function LibraryV3() {
                         {area.journal.stages.map((s) =>
                           s.live ? (
                             <PressableScale key={s.key} onPress={() => router.push(guideHref(area.journal!, s))} style={[styles.stagePill, styles.stageLive]}>
-                              <T latin size={13} weight="medium" color={v3.white}>
+                              <T latin size={15} weight="medium" color={v3.white}>
                                 {`${s.label} guide`}
                               </T>
                               <ChevronRight size={14} color={v3.white} strokeWidth={1.8} />
                             </PressableScale>
                           ) : (
                             <View key={s.key} style={[styles.stagePill, { opacity: 0.55 }]}>
-                              <T latin size={13}>{`${s.label} · coming soon`}</T>
+                              <T latin size={15}>{`${s.label} · coming soon`}</T>
                             </View>
                           ),
                         )}
@@ -244,7 +244,7 @@ export default function LibraryV3() {
                     </Grid>
                   ) : (
                     <View style={styles.empty}>
-                      <T size={14} color={v3.muted} align="center">
+                      <T size={16} color={v3.muted} align="center">
                         {t('lib.empty')}
                       </T>
                     </View>

@@ -35,8 +35,8 @@ export const doctors: Doctor[] = [
     rating: '4.6/5.0',
     reviews: 210,
     credentials: {
-      en: 'Consultant Obstetrician & Gynecologist • MBBS, FCPS (OBGYN), MRCOG (UK), Fellowship in Fetal Medicine',
-      ur: 'کنسلٹنٹ ماہرِ امراضِ نسواں و زچگی • MBBS، FCPS (OBGYN)، MRCOG (UK)، فیٹل میڈیسن میں فیلوشپ',
+      en: 'Specialist Obstetrician & Gynecologist • MBBS, FCPS (OBGYN), MRCOG (UK), Fellowship in Fetal Medicine',
+      ur: 'ماہرِ امراضِ نسواں و زچگی • MBBS، FCPS (OBGYN)، MRCOG (UK)، فیٹل میڈیسن میں فیلوشپ',
     },
     next: { en: 'Tomorrow, 10:00 AM', ur: 'کل، صبح 10:00' },
     bio: {
@@ -79,8 +79,8 @@ export const doctors: Doctor[] = [
     rating: '4.7/5.0',
     reviews: 127,
     credentials: {
-      en: 'Consultant Pediatrician & Neonatologist • MBBS, FCPS (Pediatrics), Fellowship Neonatology (USA)',
-      ur: 'کنسلٹنٹ ماہرِ امراضِ اطفال و نوزائیدہ • MBBS، FCPS (اطفال)، نیونیٹولوجی میں فیلوشپ (امریکہ)',
+      en: 'Specialist Pediatrician & Neonatologist • MBBS, FCPS (Pediatrics), Fellowship Neonatology (USA)',
+      ur: 'ماہرِ امراضِ اطفال و نوزائیدہ • MBBS، FCPS (اطفال)، نیونیٹولوجی میں فیلوشپ (امریکہ)',
     },
     next: { en: 'Tomorrow, 2:00 PM', ur: 'کل، دوپہر 2:00' },
     bio: {
@@ -101,7 +101,7 @@ export const doctors: Doctor[] = [
     rating: '4.8/5.0',
     reviews: 96,
     credentials: {
-      en: 'Lactation Consultant • MBBS, IBCLC, Diploma in Maternal Nutrition',
+      en: 'Lactation Specialist • MBBS, IBCLC, Diploma in Maternal Nutrition',
       ur: 'ماہرِ رضاعت • MBBS، IBCLC، زچگی غذائیت میں ڈپلومہ',
     },
     next: { en: 'Today, 6:00 PM', ur: 'آج، شام 6:00' },
@@ -256,8 +256,8 @@ export const chatKeywords: Record<Exclude<ReplyTopic, 'default'>, string[]> = {
 
 export const chatReplies: Record<ReplyTopic, Loc> = {
   default: {
-    en: 'That’s a good question. Every pregnancy is different, so I’ll keep my answer general. If anything feels wrong, you can reach a consultant from the Consultants tab.',
-    ur: 'بہت اچھا سوال ہے۔ ہر حمل مختلف ہوتا ہے، اس لیے میں عمومی بات کروں گی۔ اگر کچھ بھی ٹھیک نہ لگے تو کنسلٹنٹس والے حصے سے اپنی ڈاکٹر سے رابطہ کریں۔',
+    en: 'That’s a good question. Every pregnancy is different, so I’ll keep my answer general. If anything feels wrong, you can reach a specialist from the Specialists tab.',
+    ur: 'بہت اچھا سوال ہے۔ ہر حمل مختلف ہوتا ہے، اس لیے میں عمومی بات کروں گی۔ اگر کچھ بھی ٹھیک نہ لگے تو ماہرین والے حصے سے اپنی ڈاکٹر سے رابطہ کریں۔',
   },
   kicks: {
     en: 'From week 28, aim to feel about 10 movements within 2 hours, ideally when baby is usually active. If you notice fewer, have a cold drink, lie on your left side and count again. If movements are still low, call your doctor.',

@@ -54,7 +54,7 @@ export default function LibraryGuideV3() {
       <ScreenV3 orbs="a">
         <View style={[styles.article, { paddingTop: 30, gap: 16 }]}>
           <BackLink label="Back to the library" onPress={() => router.navigate('/library')} />
-          <T latin size={18}>
+          <T latin size={20}>
             This guide could not be found.
           </T>
         </View>
@@ -80,7 +80,7 @@ export default function LibraryGuideV3() {
               <Rich text={`The ${s.label.toLowerCase()} guide for ${c.title.toLowerCase()} is coming soon. The first trimester guide is ready to read now.`} />
               {first && (
                 <PressableScale onPress={() => router.replace(guideHref(c, first))} style={styles.cta}>
-                  <T latin size={14} weight="medium" color={v3.white}>
+                  <T latin size={16} weight="medium" color={v3.white}>
                     {`Read the ${first.label.toLowerCase()} guide`}
                   </T>
                   <ChevronRight size={16} color={v3.white} strokeWidth={1.8} />
@@ -111,9 +111,9 @@ export default function LibraryGuideV3() {
           <T latin size={wide ? 44 : 32} weight="light" style={{ lineHeight: wide ? 50 : 38, letterSpacing: -1 }}>
             {`${s.label} guide`}
           </T>
-          {s.intro && <Rich text={s.intro} size={wide ? 18 : 16.5} weight="light" color="#4B5A53" />}
+          {s.intro && <Rich text={s.intro} size={wide ? 20 : 18.5} color="#4B5A53" />}
           <Rich text={c.overview} />
-          <T latin size={12.5} color={v3.muted}>
+          <T latin size={14.5} color={v3.muted}>
             {`Covers all ${guides.length} ${s.label.toLowerCase()} exercises in this part of your journal · about ${guideMinutes(s)} min read`}
           </T>
         </View>
@@ -125,10 +125,10 @@ export default function LibraryGuideV3() {
               const on = i === active;
               return (
                 <PressableScale key={g.num} onPress={() => jump(i)} scaleTo={0.96} style={[styles.tocBtn, on && styles.tocOn]}>
-                  <T latin size={13} weight="semibold" color={on ? v3.white : v3.black}>
+                  <T latin size={15} weight="semibold" color={on ? v3.white : v3.black}>
                     {g.num}
                   </T>
-                  <T latin size={13} color={on ? v3.white : v3.black}>
+                  <T latin size={15} color={on ? v3.white : v3.black}>
                     {g.title}
                   </T>
                 </PressableScale>
@@ -158,11 +158,11 @@ export default function LibraryGuideV3() {
                 {`${g.num} ${g.title}`}
               </T>
               {g.page && g.page !== g.title && (
-                <T latin size={13} color={v3.muted}>
+                <T latin size={15} color={v3.muted}>
                   {`On the journal page “${g.page}”`}
                 </T>
               )}
-              <Rich text={g.desc} size={16.5} weight="light" color="#4B5A53" />
+              <Rich text={g.desc} size={18.5} color="#4B5A53" />
               <View style={{ gap: 12 }}>
                 {g.blocks.map((b, j) => (
                   <BlockView key={j} b={b} />
@@ -170,7 +170,7 @@ export default function LibraryGuideV3() {
               </View>
               <PressableScale onPress={() => scroll.current?.scrollTo({ y: 0, animated: true })} style={styles.top}>
                 <ArrowUp size={14} color={v3.black} strokeWidth={1.8} />
-                <T latin size={13} weight="medium">
+                <T latin size={15} weight="medium">
                   Back to top of guide
                 </T>
               </PressableScale>
@@ -185,11 +185,11 @@ export default function LibraryGuideV3() {
               <PressableScale onPress={() => router.replace(guideHref(pv.c, pv.s))} style={styles.pageBtn}>
                 <View style={styles.pageLbl}>
                   <ChevronLeft size={14} color={v3.muted} strokeWidth={1.6} />
-                  <T latin size={12} color={v3.muted}>
+                  <T latin size={14} color={v3.muted}>
                     Previous guide
                   </T>
                 </View>
-                <T latin size={14} weight="medium">
+                <T latin size={16} weight="medium">
                   {pv.c.section}
                 </T>
               </PressableScale>
@@ -199,21 +199,21 @@ export default function LibraryGuideV3() {
             {nx ? (
               <PressableScale onPress={() => router.replace(guideHref(nx.c, nx.s))} style={[styles.pageBtn, { alignItems: 'flex-end' }]}>
                 <View style={styles.pageLbl}>
-                  <T latin size={12} color={v3.muted}>
+                  <T latin size={14} color={v3.muted}>
                     Next guide
                   </T>
                   <ChevronRight size={14} color={v3.muted} strokeWidth={1.6} />
                 </View>
-                <T latin size={14} weight="medium" align="right">
+                <T latin size={16} weight="medium" align="right">
                   {nx.c.section}
                 </T>
               </PressableScale>
             ) : (
               <PressableScale onPress={backToArea} style={[styles.pageBtn, { alignItems: 'flex-end' }]}>
-                <T latin size={12} color={v3.muted}>
+                <T latin size={14} color={v3.muted}>
                   Back to
                 </T>
-                <T latin size={14} weight="medium" align="right">
+                <T latin size={16} weight="medium" align="right">
                   {`${c.section} topics`}
                 </T>
               </PressableScale>
@@ -222,13 +222,13 @@ export default function LibraryGuideV3() {
 
           {refs.length > 0 && (
             <View style={styles.sources}>
-              <T latin size={15} weight="semibold">
+              <T latin size={17} weight="semibold">
                 Sources
               </T>
               {refs.map((r) => (
                 <View key={r} style={styles.ref}>
                   <View style={styles.dot} />
-                  <T latin size={12.5} color={v3.muted} style={{ flex: 1, lineHeight: 19 }}>
+                  <T latin size={14.5} color={v3.muted} style={{ flex: 1, lineHeight: 22 }}>
                     {r}
                   </T>
                 </View>
@@ -236,7 +236,7 @@ export default function LibraryGuideV3() {
               <View style={{ marginTop: 6 }}>
                 <SectionLabel>Educational only</SectionLabel>
               </View>
-              <T latin size={12.5} color={v3.muted} style={{ lineHeight: 19 }}>
+              <T latin size={14.5} color={v3.muted} style={{ lineHeight: 22 }}>
                 This guide does not diagnose and is not a substitute for care from your doctor, midwife, Lady Health Visitor or a mental health professional.
               </T>
             </View>
