@@ -95,7 +95,9 @@ const initialsOf = (name: string) =>
 /** Specialists type their profile in one language, so it reads the same in English and Urdu. */
 export function specialistToDoctor(id: string, s: SpecialistDetails): Doctor {
   const same = (v: string) => ({ en: v, ur: v });
-  const name = /^dr\.?\s/i.test(s.fullName) ? s.fullName : `Dr. ${s.fullName}`;
+  // Only medical specialties get an automatic "Dr."; psychologists and yoga teachers keep the name they gave.
+  const medical = s.specialty === 'Gynecologist' || s.specialty === 'Pediatrician';
+  const name = /^dr\.?\s/i.test(s.fullName) || !medical ? s.fullName : `Dr. ${s.fullName}`;
   return {
     id,
     name: same(name),

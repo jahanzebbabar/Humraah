@@ -3,7 +3,7 @@ import type { StringKey } from '@/i18n/strings';
 import type { Tone } from '@/theme';
 
 export type City = 'Lahore' | 'Karachi' | 'Islamabad';
-export type Specialty = 'Gynecologist' | 'Pediatrician' | 'Lactation' | 'Nutritionist';
+export type Specialty = 'Gynecologist' | 'Pediatrician' | 'Lactation' | 'Nutritionist' | 'Psychologist' | 'Physiotherapist' | 'Yoga';
 
 export type Doctor = {
   id: string;
@@ -133,7 +133,7 @@ export const doctors: Doctor[] = [
 ];
 
 export const cityOptions: ('all' | City)[] = ['all', 'Lahore', 'Karachi', 'Islamabad'];
-export const specialtyOptions: ('all' | Specialty)[] = ['all', 'Gynecologist', 'Pediatrician', 'Lactation', 'Nutritionist'];
+export const specialtyOptions: ('all' | Specialty)[] = ['all', 'Gynecologist', 'Pediatrician', 'Lactation', 'Nutritionist', 'Psychologist', 'Physiotherapist', 'Yoga'];
 
 export const bookingDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
 export const bookingTimes = ['09:00', '10:30', '12:00', '15:30', '18:00'];

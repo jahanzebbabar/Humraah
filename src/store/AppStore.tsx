@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
-  doctors,
   initialCare,
   initialContacts,
   initialPlanner,
@@ -110,8 +109,12 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [contacts, setContacts] = useState(initialContacts);
   const [readNotifications, setRead] = useState<string[]>([]);
   const [supplements, setSupplements] = useState(initialSupplements);
-  // Without Firebase keys the sample doctors stand in for registered specialists, and new sign-ups join them in memory.
-  const [specialists, setSpecialists] = useState<Doctor[]>(firebaseReady ? [] : doctors);
+  // The directory only ever lists specialists registered in Firebase; sample doctors are never shown as real ones.
+  // Without Firebase keys (demo mode) it starts empty and in-app sign-ups join it in memory.
+  const [specialists, setSpecialists] = useState<Doctor[]>([]);
+  useEffect(() => {
+    if (!firebaseReady) console.warn('[specialists] EXPO_PUBLIC_FIREBASE_* keys are missing; the directory is running in demo mode.');
+  }, []);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [myListing, setMyListing] = useState<SpecialistDetails | null>(null);
 

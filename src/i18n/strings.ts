@@ -157,6 +157,9 @@ export const en = {
   'spec.Pediatrician': 'Pediatrician',
   'spec.Lactation': 'Lactation',
   'spec.Nutritionist': 'Nutritionist',
+  'spec.Psychologist': 'Psychologist',
+  'spec.Physiotherapist': 'Physiotherapist',
+  'spec.Yoga': 'Yoga & Wellness',
 
   'day.Monday': 'Monday',
   'day.Tuesday': 'Tuesday',
@@ -658,6 +661,9 @@ export const ur: Record<StringKey, string> = {
   'spec.Pediatrician': 'ماہرِ اطفال',
   'spec.Lactation': 'ماہرِ رضاعت',
   'spec.Nutritionist': 'ماہرِ غذائیت',
+  'spec.Psychologist': 'ماہرِ نفسیات',
+  'spec.Physiotherapist': 'فزیوتھراپسٹ',
+  'spec.Yoga': 'یوگا اور تندرستی',
 
   'day.Monday': 'پیر',
   'day.Tuesday': 'منگل',
