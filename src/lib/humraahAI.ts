@@ -3,11 +3,16 @@
  * keeps server-side. The key never ships inside the app: anything bundled into the app can be extracted.
  *
  * Set EXPO_PUBLIC_HUMRAAH_API_URL in mobile/.env.local (e.g. http://192.168.1.20:3000 for a phone on
- * your Wi-Fi, http://localhost:3000 for web). Leave it empty to keep the offline canned replies.
+ * your Wi-Fi, http://localhost:3000 for web). On the Vercel web build leave it unset: the app then calls
+ * its own /api/ai/chat function (mobile/api/ai/chat.ts). Native builds with it empty keep the canned replies.
  */
+import { Platform } from 'react-native';
+
 const API_URL = (process.env.EXPO_PUBLIC_HUMRAAH_API_URL ?? '').replace(/\/+$/, '');
 
-export const humraahAIConfigured = API_URL.length > 0;
+// On the web build hosted on Vercel, the chat endpoint is the api/ai/chat.ts function on the same site,
+// so an empty URL means "this site". Native apps need a full URL (e.g. https://<your-app>.vercel.app).
+export const humraahAIConfigured = API_URL.length > 0 || Platform.OS === 'web';
 
 export type HumraahTurn = { sender: 'user' | 'ai'; text: string };
 
