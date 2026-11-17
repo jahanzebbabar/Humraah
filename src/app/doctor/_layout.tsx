@@ -1,4 +1,5 @@
 import { Redirect } from 'expo-router';
+import { View } from 'react-native';
 import { Tabs } from 'expo-router/js-tabs';
 import { CalendarCheck, UserCog } from 'lucide-react-native';
 import { AppHeaderV3, type NavItem } from '@/design/v3/AppHeaderV3';
@@ -13,7 +14,9 @@ const items: NavItem[] = [
 
 /** Specialists get their own two-tab app: appointments and their listing. Mothers never land here. */
 export default function DoctorLayout() {
-  const { signedIn, user } = useAppStore();
+  const { signedIn, user, authReady } = useAppStore();
+  // Wait for a kept session to come back before deciding the visitor is signed out.
+  if (!authReady) return <View style={{ flex: 1, backgroundColor: v3.bone }} />;
   if (!signedIn) return <Redirect href="/welcome" />;
   if (user.role !== 'specialist') return <Redirect href="/" />;
 

@@ -11,9 +11,11 @@ import { useAppStore } from '@/store/AppStore';
 const GUEST_ITEMS = MOTHER_ITEMS.filter((item) => item.name === 'library');
 
 export default function TabsLayout() {
-  const { signedIn, user } = useAppStore();
+  const { signedIn, user, authReady } = useAppStore();
   const segments = useSegments() as string[];
   const inLibrary = segments[1] === 'library';
+  // Wait for a kept session to come back before deciding the visitor is signed out.
+  if (!authReady) return <View style={{ flex: 1, backgroundColor: v3.bone }} />;
 
   if (!signedIn) {
     if (!inLibrary) return <Redirect href="/welcome" />;

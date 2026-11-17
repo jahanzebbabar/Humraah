@@ -10,9 +10,13 @@ import {
   type PlannerItem,
   type Supplement,
 } from '@/data/mock';
+import { weekFromDueDate } from '@/data/babySize';
 import type { Loc } from '@/i18n';
 import {
   bookAppointment as bookRemote,
+  getSpecialist,
+  loadAccount,
+  onFirstAuthState,
   saveMyDoctor,
   setAppointmentStatus as setStatusRemote,
   signOutFirebase,
@@ -22,6 +26,7 @@ import {
   updateSpecialist,
   type Appointment,
   type AppointmentDraft,
+  type Account,
   type AppointmentStatus,
   type MotherDetails,
   type Role,
@@ -49,6 +54,8 @@ type Store = {
   user: User;
   updateUser: (patch: Partial<User>) => void;
   signedIn: boolean;
+  /** False until the app has checked for a session kept from before (e.g. across a page refresh). */
+  authReady: boolean;
   signIn: (patch?: Partial<User>) => void;
   signOut: () => void;
   kicks: number;
@@ -86,6 +93,22 @@ const AppStoreContext = createContext<Store | null>(null);
 /** A name typed by the user is the same in both languages. */
 export const same = (s: string): Loc => ({ en: s, ur: s });
 
+/** Turns a saved Firebase account into the app's user, for both a fresh login and a restored session. */
+export function accountToUser({ fullName, uid, role, email, ...details }: Account): Partial<User> {
+  const name = fullName || email.split('@')[0];
+  return {
+    ...details,
+    uid,
+    role,
+    email,
+    firstName: same(name.split(' ')[0]),
+    fullName: same(name),
+    // The week moves on from the due date given at sign-up, so it is never stale.
+    week: details.dueDate ? weekFromDueDate(details.dueDate) : (details.week ?? 40),
+    needs: details.needs ?? [],
+  };
+}
+
 const defaultUser: User = {
   firstName: { en: 'Maryam', ur: 'مریم' },
   fullName: { en: 'Maryam Khan', ur: 'مریم خان' },
@@ -102,6 +125,7 @@ const tones = ['lavender', 'mint', 'sage', 'sky', 'peach'] as const;
 export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState(defaultUser);
   const [signedIn, setSignedIn] = useState(false);
+  const [authReady, setAuthReady] = useState(!firebaseReady);
   const [kicks, setKicks] = useState(7);
   const [care, setCare] = useState(initialCare);
   const [planner, setPlanner] = useState(initialPlanner);
@@ -117,6 +141,32 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, []);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [myListing, setMyListing] = useState<SpecialistDetails | null>(null);
+
+  // Restore the session Firebase kept from last time, so refreshing the page does not sign anyone out.
+  useEffect(() => {
+    if (!firebaseReady) return;
+    let cancelled = false;
+    const unsubscribe = onFirstAuthState(async (fbUser) => {
+      try {
+        if (fbUser) {
+          const account = await loadAccount(fbUser);
+          const listing = account.role === 'specialist' ? await getSpecialist(account.uid) : null;
+          if (cancelled) return;
+          setMyListing(listing);
+          setUser((u) => ({ ...u, ...accountToUser(account) }));
+          setSignedIn(true);
+        }
+      } catch (e) {
+        console.warn('[auth] could not restore session', (e as Error).message);
+      } finally {
+        if (!cancelled) setAuthReady(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (!firebaseReady || !signedIn || !user.uid) return;
@@ -214,6 +264,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       user,
       updateUser,
       signedIn,
+      authReady,
       signIn,
       signOut,
       kicks,
@@ -242,7 +293,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       setMyListing,
       saveListing,
     }),
-    [user, updateUser, signedIn, signIn, signOut, kicks, addKick, care, toggleCare, planner, togglePlanner, removePlanner, restorePlanner, savePlanner, contacts, addContact, removeContact, readNotifications, markRead, supplements, toggleSupplement, specialists, addLocalSpecialist, setMyDoctor, appointments, bookAppointment, setAppointmentStatus, myListing, saveListing],
+    [user, updateUser, signedIn, authReady, signIn, signOut, kicks, addKick, care, toggleCare, planner, togglePlanner, removePlanner, restorePlanner, savePlanner, contacts, addContact, removeContact, readNotifications, markRead, supplements, toggleSupplement, specialists, addLocalSpecialist, setMyDoctor, appointments, bookAppointment, setAppointmentStatus, myListing, saveListing],
   );
 
   return <AppStoreContext.Provider value={value}>{children}</AppStoreContext.Provider>;

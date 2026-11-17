@@ -9,10 +9,9 @@ import { AuthFrameV3, ButtonV3, ErrorV3, FieldV3, Glass, H1V3, IconGlass, T } fr
 import { Object3D } from '@/design/v3/Object3D';
 import { v3 } from '@/design/v3/tokens';
 import { useI18n } from '@/i18n';
-import { weekFromDueDate } from '@/data/babySize';
 import { getSpecialist, signInWithEmail } from '@/lib/accounts';
 import { firebaseReady } from '@/lib/firebase';
-import { same, useAppStore } from '@/store/AppStore';
+import { accountToUser, useAppStore } from '@/store/AppStore';
 import { enter } from '@/theme/motion';
 
 export default function LoginV3() {
@@ -38,20 +37,10 @@ export default function LoginV3() {
     }
     setBusy(true);
     try {
-      const { fullName, uid, role, ...details } = await signInWithEmail(email.trim(), password);
-      const name = fullName || email.trim().split('@')[0];
-      if (role === 'specialist') setMyListing(await getSpecialist(uid));
-      signIn({
-        ...details,
-        uid,
-        role,
-        firstName: same(name.split(' ')[0]),
-        fullName: same(name),
-        // The week moves on from the due date given at sign-up, so it is never stale.
-        week: details.dueDate ? weekFromDueDate(details.dueDate) : (details.week ?? 40),
-        needs: details.needs ?? [],
-      });
-      router.replace(role === 'specialist' ? '/doctor' : '/');
+      const account = await signInWithEmail(email.trim(), password);
+      if (account.role === 'specialist') setMyListing(await getSpecialist(account.uid));
+      signIn(accountToUser(account));
+      router.replace(account.role === 'specialist' ? '/doctor' : '/');
     } catch {
       setError(t('login.failed'));
     } finally {

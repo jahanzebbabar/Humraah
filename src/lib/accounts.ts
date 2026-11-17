@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut as fbSignOut, updateProfile, type User as FirebaseUser } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, onSnapshot, query, serverTimestamp, setDoc, updateDoc, where, writeBatch } from 'firebase/firestore';
 import type { City, Doctor, Specialty } from '@/data/mock';
 import { auth, db } from '@/lib/firebase';
@@ -63,11 +63,28 @@ export async function registerSpecialist(email: string, password: string, detail
   return account;
 }
 
+/** The saved profile of a signed-in Firebase user. */
+export async function loadAccount(fbUser: FirebaseUser): Promise<Account> {
+  const snap = await getDoc(doc(need(db), 'users', fbUser.uid));
+  const data = snap.data() as Account | undefined;
+  return data ?? { uid: fbUser.uid, role: 'mother', fullName: fbUser.displayName ?? '', email: fbUser.email ?? '' };
+}
+
 export async function signInWithEmail(email: string, password: string): Promise<Account> {
   const cred = await signInWithEmailAndPassword(need(auth), email, password);
-  const snap = await getDoc(doc(need(db), 'users', cred.user.uid));
-  const data = snap.data() as Account | undefined;
-  return data ?? { uid: cred.user.uid, role: 'mother', fullName: cred.user.displayName ?? '', email };
+  return loadAccount(cred.user);
+}
+
+/**
+ * Calls back once with the session Firebase kept from last time (null when signed out).
+ * Firebase stores the login in the browser / device, so a page refresh does not end it.
+ */
+export function onFirstAuthState(cb: (user: FirebaseUser | null) => void) {
+  const unsubscribe = onAuthStateChanged(need(auth), (u) => {
+    unsubscribe();
+    cb(u);
+  });
+  return unsubscribe;
 }
 
 export const signOutFirebase = () => (auth ? fbSignOut(auth) : Promise.resolve());
